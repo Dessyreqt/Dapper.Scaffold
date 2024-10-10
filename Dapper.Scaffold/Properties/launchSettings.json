@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SqlServer": {
+      "commandName": "Project",
+      "commandLineArgs": "-c \"Server=localhost; Database=Dapper.Scaffold.Test; Trusted_Connection=True;\" -p \"./classes\" -n \"Dapper.Scaffold.Test\" -f -e -d"
+    }
+  }
+}

@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper.Scaffold.Domain.Enums;
 
-//using System.Data.SqlClient;
-
 namespace Dapper.Scaffold.Domain;
 
 internal class ClassGenerator

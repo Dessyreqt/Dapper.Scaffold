@@ -21,7 +21,8 @@ In the code, extension methods can be used like this:
 
 var existingCustomer = await connection.GetCustomerByIdAsync(1); // gets Customer with Id 1
 var allCustomers = await connection.GetCustomerListAsync(); // gets all Customers
-var texasCustomers = await connection.GetCustomerListAsync("[State] = @State", new { State = "TX" }); // gets all Customers from Texas
+var californiaCustomers = await connection.GetCustomerListAsync("[State] = 'CA'"); // gets all Customers from California
+var texasCustomers = await connection.GetCustomerListAsync("[State] = @State", new { State = "TX" }); // gets all Customers from Texas, this time passing in a parameter object as with normal Dapper.
 
 
 

@@ -14,8 +14,8 @@ namespace Dapper.Scaffold.Domain;
 internal class ClassGenerator
 {
     private readonly ClassGenerationOptions _options;
+    private readonly IDatabaseReader _databaseReader;
     private GeneratedFile _generatedFile;
-    private IDatabaseReader _databaseReader;
 
     public ClassGenerator(ClassGenerationOptions options, IDatabaseReader databaseReader)
     {
@@ -84,7 +84,8 @@ internal class ClassGenerator
 
     private async Task WriteExtensionsFileAsync(string path, List<GeneratedFile> generatedFiles, bool force, string databaseName, string ns)
     {
-        var filename = Path.Combine(path, $"{databaseName}ConnectionExtensions.g.cs");
+        var className = GetClassName(databaseName);
+        var filename = Path.Combine(path, $"{className}ConnectionExtensions.g.cs");
         var firstClass = true;
 
         Console.WriteLine($"Writing file \"{filename}\"...");
@@ -106,7 +107,7 @@ internal class ClassGenerator
         extensionsText.AppendLine();
         extensionsText.AppendLine($"namespace {ns};");
         extensionsText.AppendLine();
-        extensionsText.AppendLine($"public static class {databaseName}ConnectionExtensions");
+        extensionsText.AppendLine($"public static class {className}ConnectionExtensions");
         extensionsText.AppendLine("{");
 
         foreach (var file in generatedFiles)
@@ -176,7 +177,7 @@ internal class ClassGenerator
 
     private async Task GenerateFileAsync(IDbConnection connection, string ns, string tableName)
     {
-        _generatedFile = new() { Namespace = ns, };
+        _generatedFile = new(_databaseReader) { FileNamespace = ns, };
 
         var className = GetClassName(tableName);
 
@@ -197,9 +198,30 @@ internal class ClassGenerator
 
     private string GetClassName(string tableName)
     {
-        var className = tableName.Replace(" ", "");
+        var className = new StringBuilder();
+        var capitalizeNext = true;
 
-        return className;
+        foreach (var tableNameChar in tableName)
+        {
+            if (char.IsLetterOrDigit(tableNameChar))
+            {
+                if (capitalizeNext)
+                {
+                    className.Append(char.ToUpper(tableNameChar));
+                    capitalizeNext = false;
+                }
+                else
+                {
+                    className.Append(tableNameChar);
+                }
+            }
+            else
+            {
+                capitalizeNext = true;
+            }
+        }
+
+        return className.ToString();
     }
 
     private List<GeneratedProperty> GetGeneratedProperties(List<TableColumn> tableColumns)

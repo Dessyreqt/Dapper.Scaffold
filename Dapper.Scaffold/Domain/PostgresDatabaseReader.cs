@@ -13,6 +13,52 @@ public class PostgresDatabaseReader : IDatabaseReader
         return new NpgsqlConnection(connectionString);
     }
 
+    public string GetSelectAllQuery(string tableName)
+    {
+        return $"SELECT * FROM \\\"{tableName}\\\";";
+    }
+
+    public string GetSelectWhereQuery(string tableName)
+    {
+        return $"SELECT * FROM \\\"{tableName}\\\" WHERE {{whereClause}};";
+    }
+
+    public string GetSelectByIdQuery(string tableName, string identityColumnName)
+    {
+        return $"SELECT * FROM \\\"{tableName}\\\" WHERE \\\"{identityColumnName}\\\" = @{identityColumnName};";
+    }
+
+    public string GetUpdateQuery(string tableName, string identityColumnName, IEnumerable<string> writeColumns)
+    {
+        var setColumns = string.Join(", ", writeColumns.Select(columnName => $"\\\"{columnName}\\\" = @{columnName}"));
+        return $"UPDATE \\\"{tableName}\\\" SET {setColumns} WHERE \\\"{identityColumnName}\\\" = @{identityColumnName};";
+    }
+
+    public string GetDeleteQuery(string tableName, string identityColumnName)
+    {
+        return $"DELETE FROM \\\"{tableName}\\\" WHERE \\\"{identityColumnName}\\\" = @{identityColumnName};";
+    }
+
+    public string GetBasicInsertQuery(string tableName, IEnumerable<string> writeColumns, IEnumerable<string> readColumns)
+    {
+        var outputString = readColumns.Any() ? $" RETURNING {string.Join(", ", readColumns.Select(columnName => $"\\\"{columnName}\\\""))}" : string.Empty;
+        var insertColumns = string.Join(", ", writeColumns.Select(columnName => $"\\\"{columnName}\\\""));
+        var valueParameters = string.Join(", ", writeColumns.Select(columnName => $"@{columnName}"));
+
+        return $"INSERT INTO \\\"{tableName}\\\" ({insertColumns}) VALUES ({valueParameters}){outputString};";
+    }
+
+    public string GetAdvancedInsertQueryOutputText()
+    {
+        return " RETURNING {string.Join(\", \", outputColumns.Select(columnName => $\"\\\"{columnName}\\\"\"))}";
+    }
+
+    public string GetAdvancedInsertQuery(string tableName)
+    {
+        return
+            $"INSERT INTO \\\"{tableName}\\\" ({{string.Join(\", \", insertColumns.Select(columnName => $\"\\\"{{columnName}}\\\"\"))}}) VALUES ({{string.Join(\", \", insertColumns.Select(columnName => $\"@{{columnName}}\"))}}){{outputText}};";
+    }
+
     public string GetCSharpType(string dbType)
     {
         switch (dbType.ToLower())

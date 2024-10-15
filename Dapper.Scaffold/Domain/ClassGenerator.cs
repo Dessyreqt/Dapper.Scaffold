@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,11 +12,13 @@ namespace Dapper.Scaffold.Domain;
 internal class ClassGenerator
 {
     private readonly ClassGenerationOptions _options;
+    private readonly IDatabaseReader _databaseReader;
     private GeneratedFile _generatedFile;
 
-    public ClassGenerator(ClassGenerationOptions options)
+    public ClassGenerator(ClassGenerationOptions options, IDatabaseReader databaseReader)
     {
         _options = options;
+        _databaseReader = databaseReader;
     }
 
     public async Task GenerateAsync()
@@ -28,7 +30,7 @@ internal class ClassGenerator
             throw new("Please specify a connection string using the -c parameter or by setting it in the appsettings.json");
         }
 
-        await using var connection = new SqlConnection(connectionString);
+        using var connection = _databaseReader.CreateConnection(connectionString);
 
         var tableName = _options.TableName;
         var path = _options.Path ?? Directory.GetCurrentDirectory();
@@ -62,7 +64,7 @@ internal class ClassGenerator
         }
         else
         {
-            var tableNames = await GetTableNamesAsync(connection);
+            var tableNames = await _databaseReader.GetTableNamesAsync(connection);
 
             foreach (var table in tableNames)
             {
@@ -74,15 +76,14 @@ internal class ClassGenerator
 
         if (_options.Extensions)
         {
-            await WriteExtensionsFileAsync(path, generatedFiles, force, ns);
+            await WriteExtensionsFileAsync(path, generatedFiles, force, connection.Database, ns);
         }
     }
 
-    private async Task WriteExtensionsFileAsync(string path, List<GeneratedFile> generatedFiles, bool force, string ns)
+    private async Task WriteExtensionsFileAsync(string path, List<GeneratedFile> generatedFiles, bool force, string databaseName, string ns)
     {
-        var connectionStringBuilder = new SqlConnectionStringBuilder(_options.ConnectionString);
-        var databaseName = connectionStringBuilder.InitialCatalog;
-        var filename = Path.Combine(path, $"{databaseName}ConnectionExtensions.g.cs");
+        var className = GetClassName(databaseName);
+        var filename = Path.Combine(path, $"{className}ConnectionExtensions.g.cs");
         var firstClass = true;
 
         Console.WriteLine($"Writing file \"{filename}\"...");
@@ -104,7 +105,7 @@ internal class ClassGenerator
         extensionsText.AppendLine();
         extensionsText.AppendLine($"namespace {ns};");
         extensionsText.AppendLine();
-        extensionsText.AppendLine($"public static class {databaseName}ConnectionExtensions");
+        extensionsText.AppendLine($"public static class {className}ConnectionExtensions");
         extensionsText.AppendLine("{");
 
         foreach (var file in generatedFiles)
@@ -151,7 +152,7 @@ internal class ClassGenerator
         }
     }
 
-    private async Task WriteFileAsync(SqlConnection connection, string path, string tableName, bool force, string ns)
+    private async Task WriteFileAsync(IDbConnection connection, string path, string tableName, bool force, string ns)
     {
         var className = GetClassName(tableName);
         var filename = Path.Combine(path, $"{className}.g.cs");
@@ -172,26 +173,13 @@ internal class ClassGenerator
         Console.WriteLine($"File \"{filename}\" written.");
     }
 
-    private async Task<List<string>> GetTableNamesAsync(SqlConnection connection)
+    private async Task GenerateFileAsync(IDbConnection connection, string ns, string tableName)
     {
-        var tableQuery = @"SELECT TABLE_NAME
-FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_TYPE = 'BASE TABLE'
-	AND TABLE_SCHEMA = 'dbo'
-ORDER BY TABLE_NAME";
-
-        var tableNames = (await connection.QueryAsync<string>(tableQuery)).ToList();
-
-        return tableNames;
-    }
-
-    private async Task GenerateFileAsync(SqlConnection connection, string ns, string tableName)
-    {
-        _generatedFile = new() { Namespace = ns, };
+        _generatedFile = new(_databaseReader) { FileNamespace = ns, };
 
         var className = GetClassName(tableName);
 
-        var tableColumns = await GetTableColumnsAsync(connection, tableName);
+        var tableColumns = await _databaseReader.GetTableColumnsAsync(connection, tableName);
 
         var mainClass = new GeneratedClass { Access = Access.Public, Name = className, TableName = tableName, };
         _generatedFile.AddClass(mainClass);
@@ -208,9 +196,30 @@ ORDER BY TABLE_NAME";
 
     private string GetClassName(string tableName)
     {
-        var className = tableName.Replace(" ", "");
+        var className = new StringBuilder();
+        var capitalizeNext = true;
 
-        return className;
+        foreach (var tableNameChar in tableName)
+        {
+            if (char.IsLetterOrDigit(tableNameChar))
+            {
+                if (capitalizeNext)
+                {
+                    className.Append(char.ToUpper(tableNameChar));
+                    capitalizeNext = false;
+                }
+                else
+                {
+                    className.Append(tableNameChar);
+                }
+            }
+            else
+            {
+                capitalizeNext = true;
+            }
+        }
+
+        return className.ToString();
     }
 
     private List<GeneratedProperty> GetGeneratedProperties(List<TableColumn> tableColumns)
@@ -232,7 +241,8 @@ ORDER BY TABLE_NAME";
 
     private string GetCSharpType(TableColumn column)
     {
-        var type = _generatedFile.RegisterDbType(column.ColumnType);
+        var type = _databaseReader.GetCSharpType(column.ColumnType);
+        _generatedFile.AddNamespaceForType(type);
 
         if (column.IsNullable)
         {
@@ -240,23 +250,5 @@ ORDER BY TABLE_NAME";
         }
 
         return type;
-    }
-
-    private async Task<List<TableColumn>> GetTableColumnsAsync(SqlConnection connection, string tableName)
-    {
-        var tableColumnQuery = @"SELECT col.[name] ColumnName
-	,typ.[name] ColumnType
-	,col.is_nullable IsNullable
-	,col.is_identity IsIdentity
-	,CASE WHEN col.default_object_id = 0 THEN 0 ELSE 1 END HasDefault
-FROM sys.columns col
-JOIN sys.types typ ON col.system_type_id = typ.system_type_id
-	AND col.user_type_id = typ.user_type_id
-WHERE object_id = object_id(@tableName)
-ORDER BY column_id";
-
-        var tableColumns = (await connection.QueryAsync<TableColumn>(tableColumnQuery, new { tableName, })).ToList();
-
-        return tableColumns;
     }
 }

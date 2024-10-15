@@ -2,7 +2,11 @@
   "profiles": {
     "SqlServer": {
       "commandName": "Project",
-      "commandLineArgs": "-c \"Server=localhost; Database=Dapper.Scaffold.Test; Trusted_Connection=True;\" -p \"./classes\" -n \"Dapper.Scaffold.Test\" -f -e -d"
+      "commandLineArgs": "-c \"Server=.;Database=Dapper.Scaffold.Test;Trusted_Connection=True;\" -p \"./mssql\" -n \"Dapper.Scaffold.Test.Mssql\" -f -e -d"
+    },
+    "Postgres": {
+      "commandName": "Project",
+      "commandLineArgs": "-g postgres -c \"Host=localhost;Port=5432;Database=dapper-scaffold-test;Username=dapper-scaffold-user;Password=dapper-scaffold-password;\" -p \"./postgres\" -n \"Dapper.Scaffold.Test.Postgres\" -f -e -d"
     }
   }
 }

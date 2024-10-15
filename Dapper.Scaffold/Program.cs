@@ -1,8 +1,9 @@
-﻿namespace Dapper.Scaffold;
-
+﻿using System;
 using System.Threading.Tasks;
 using CommandLine;
 using Dapper.Scaffold.Domain;
+
+namespace Dapper.Scaffold;
 
 public class Program
 {
@@ -12,7 +13,14 @@ public class Program
             .WithParsedAsync(
                 async o =>
                 {
-                    var classGenerator = new ClassGenerator(o);
+                    IDatabaseReader databaseReader = o.Generator switch
+                    {
+                        "mssql" => new MssqlDatabaseReader(),
+                        "postgres" => new PostgresDatabaseReader(),
+                        _ => throw new ArgumentException("Invalid generator specified."),
+                    };
+
+                    var classGenerator = new ClassGenerator(o, databaseReader);
                     await classGenerator.GenerateAsync();
                 });
     }

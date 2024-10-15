@@ -4,6 +4,9 @@ namespace Dapper.Scaffold.Domain;
 
 internal class ClassGenerationOptions
 {
+    [Option('g', "generator", HelpText = "The generator to use while generating (mssql, postgres). Defaults to mssql.", Default = "mssql")]
+    public string Generator { get; set; }
+
     [Option('t', "tableName", HelpText = "The table from which to create the class.")]
     public string TableName { get; set; }
 

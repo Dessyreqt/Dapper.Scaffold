@@ -32,61 +32,6 @@ public class GeneratedFile : GeneratedObject
         _class = generatedClass;
     }
 
-    public string RegisterDbType(string dbType)
-    {
-        switch (dbType.ToLower())
-        {
-            case "bigint":
-            case "timestamp":
-                return "long";
-            case "binary":
-            case "image":
-            case "varbinary":
-                return "byte[]";
-            case "bit":
-                return "bool";
-            case "char":
-            case "nchar":
-            case "ntext":
-            case "nvarchar":
-            case "text":
-            case "varchar":
-                return "string";
-            case "date":
-            case "datetime":
-            case "datetime2":
-            case "smalldatetime":
-                AddUsing("System");
-                return "DateTime";
-            case "datetimeoffset":
-                AddUsing("System");
-                return "DateTimeOffset";
-            case "decimal":
-            case "money":
-            case "numeric":
-            case "smallmoney":
-                return "decimal";
-            case "float":
-                return "double";
-            case "int":
-                return "int";
-            case "real":
-                return "float";
-            case "smallint":
-                return "short";
-            case "time":
-                AddUsing("System");
-                return "TimeSpan";
-            case "tinyint":
-                return "byte";
-            case "uniqueidentifier":
-                AddUsing("System");
-                return "Guid";
-        }
-
-        return $"UNKNOWN_{dbType}";
-    }
-
     public override string ToString()
     {
         _output = new();
@@ -252,6 +197,21 @@ public class GeneratedFile : GeneratedObject
         return methodText.ToString();
     }
 
+    public void AddNamespaceForType(string typeName)
+    {
+        var usingNamespace = GetUsingNamespaceForType(typeName);
+
+        if (usingNamespace is null)
+        {
+            return;
+        }
+
+        if (!_usings.Contains(usingNamespace))
+        {
+            _usings.Add(usingNamespace);
+        }
+    }
+
     private string GetAdvancedInsertMethod(List<GeneratedProperty> writeColumns, List<GeneratedProperty> readColumns, List<GeneratedProperty> defaultColumns)
     {
         var nonDefaultColumns = writeColumns.Where(x => !x.HasDefault).ToList();
@@ -337,11 +297,17 @@ public class GeneratedFile : GeneratedObject
         return methodText.ToString();
     }
 
-    private void AddUsing(string usingNamespace)
+    private string? GetUsingNamespaceForType(string typeName)
     {
-        if (!_usings.Contains(usingNamespace))
+        switch (typeName)
         {
-            _usings.Add(usingNamespace);
+            case "DateTime":
+            case "DateTimeOffset":
+            case "TimeSpan":
+            case "Guid":
+                return "System";
         }
+
+        return null;
     }
 }

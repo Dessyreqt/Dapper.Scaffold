@@ -4,7 +4,7 @@ A simple Dapper scaffolding tool. Extracts models from your database and creates
 
 ## Code License
 
-This code is licensed under MIT License. See the LICENSE file for more information.
+This code is licensed under the MIT License. See the LICENSE file for more information.
 
 ## Usage
 

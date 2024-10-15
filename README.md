@@ -19,36 +19,48 @@ In the code, extension methods can be used like this:
 ```csharp
 // Read
 
-var existingCustomer = await connection.GetCustomerByIdAsync(1); // gets Customer with Id 1
-var allCustomers = await connection.GetCustomerListAsync(); // gets all Customers
-var californiaCustomers = await connection.GetCustomerListAsync("[State] = 'CA'"); // gets all Customers from California
-var texasCustomers = await connection.GetCustomerListAsync("[State] = @State", new { State = "TX" }); // gets all Customers from Texas, this time passing in a parameter object as with normal Dapper.
+// gets Customer with Id 1
+var existingCustomer = await connection.GetCustomerByIdAsync(1);
+
+// gets all Customers
+var allCustomers = await connection.GetCustomerListAsync();
+
+// gets all Customers from California
+var californiaCustomers = await connection.GetCustomerListAsync("[State] = 'CA'");
+
+// gets all Customers from Texas, this time passing in a parameter object as with normal Dapper.
+var texasCustomers = await connection.GetCustomerListAsync("[State] = @State", new { State = "TX" });
 
 
 
 // Create
 
+// inserts newCustomer. The CustomerId property will be updated with the value inserted.
 var newCustomer = new Customer { Name = "John Doe", State = "TX" };
-await connection.InsertAsync(newCustomer); // inserts newCustomer. The CustomerId property will be updated with the value inserted.
+await connection.InsertAsync(newCustomer);
 
+// decides to either update or insert otherNewCustomer based on the value of the Id property. The CustomerId property will be updated with the value inserted since this is a new customer.
 var otherNewCustomer = new Customer { Name = "Jane Doe", State = "TX" };
-await connection.SaveAsync(otherNewCustomer); // decides to either update or insert otherNewCustomer based on the value of the Id property. The CustomerId property will be updated with the value inserted since this is a new customer.
+await connection.SaveAsync(otherNewCustomer);
 
 
 
 // Update
 
+// updates existingCustomer
 existingCustomer.Name = "John Smith";
-await connection.UpdateAsync(existingCustomer); // updates existingCustomer
+await connection.UpdateAsync(existingCustomer);
 
+// decides to either update or insert existingCustomer based on the value of the Id property. In this case an update is performed.
 existingCustomer.Name = "John Doe";
-await connection.SaveAsync(existingCustomer); // decides to either update or insert existingCustomer based on the value of the Id property. In this case an update is performed.
+await connection.SaveAsync(existingCustomer);
 
 
 
 // Delete
 
-await connection.DeleteAsync(existingCustomer); // deletes existingCustomer
+// deletes existingCustomer
+await connection.DeleteAsync(existingCustomer);
 ```
 
 ### Command line arguments

@@ -6,7 +6,9 @@ A simple Dapper scaffolding tool. Extracts models from your database and creates
 
 The only required argument is the connection string to the database:
 
-`scaffer -c "Server=localhost;Database=Project;Trusted_Connection=True;"`
+```shell
+scaffer -c "Server=localhost;Database=Project;Trusted_Connection=True;"
+```
 
 This will generate models in the current folder for the Project database on the local SQL Server instance.
 

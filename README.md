@@ -6,11 +6,27 @@ A simple Dapper scaffolding tool. Extracts models from your database and creates
 
 This code is licensed under the MIT License. See the LICENSE file for more information.
 
+## Installation
+
+Install this package from NuGet:
+
+```shell
+dotnet tool install --global scaffer
+```
+
+or for a local install (to the `bin` folder in this example):
+
+```shell
+dotnet tool install scaffer --tool-path ./bin
+```
+
 ## Usage
 
 The tool is a command line tool. Example usage:
 
-`scaffer.exe -g mssql -c "Server=localhost;Database=Project;Trusted_Connection=True;" -p "./Models" -n "Project.Models" -f -e -d`
+```shell
+scaffer -g mssql -c "Server=localhost;Database=Project;Trusted_Connection=True;" -p "./Models" -n "Project.Models" -f -e -d
+```
 
 This will generate models and basic Create/Read/Update/Delete operations for the Project database on the local SQL Server instance and place them in the `./Models` folder with the namespace `Project.Models`.
 

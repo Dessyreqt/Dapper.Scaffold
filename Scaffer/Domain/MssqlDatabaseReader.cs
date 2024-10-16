@@ -106,6 +106,8 @@ public class MssqlDatabaseReader : IDatabaseReader
                 return "byte";
             case "uniqueidentifier":
                 return "Guid";
+            case "xml":
+                return "XDocument";
         }
 
         return $"UNKNOWN_{dbType}";

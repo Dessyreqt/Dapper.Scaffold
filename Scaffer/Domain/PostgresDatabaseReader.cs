@@ -113,6 +113,8 @@ public class PostgresDatabaseReader : IDatabaseReader
                 return "TimeSpan";
             case "uuid":
                 return "Guid";
+            case "xml":
+                return "XDocument";
         }
 
         return $"UNKNOWN_{dbType}";

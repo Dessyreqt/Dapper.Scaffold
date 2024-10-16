@@ -313,13 +313,17 @@ public class GeneratedFile : GeneratedObject
 
     private string? GetUsingNamespaceForType(string typeName)
     {
-        switch (typeName)
+        var baseTypeName = typeName.Replace("?", string.Empty);
+
+        switch (baseTypeName)
         {
             case "DateTime":
             case "DateTimeOffset":
             case "TimeSpan":
             case "Guid":
                 return "System";
+            case "XDocument":
+                return "System.Xml.Linq";
         }
 
         return null;

@@ -85,7 +85,7 @@ await connection.DeleteAsync(existingCustomer);
 
 ### Supported databases
 
-The `-g` flag support the following:
+The `-g` flag supports the following:
 
 - SQL Server (`mssql`, or if `-g` is omitted)
 - PostgreSQL (`postgres`)

@@ -48,7 +48,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet pack ./Dapper.Scaffold/Dapper.Scaffold.csproj -p:SelfContained=false -p:PackAsTool=true -p:PackageOutputPath=/tmp/dapper-scaffold/nupkg
+      run: dotnet pack ./Dapper.Scaffold/Dapper.Scaffold.csproj -p:SelfContained=false -p:PackAsTool=true -p:PackageOutputPath=/tmp/dapper-scaffold/nupkg -p:Version=${{ env.VERSION }}
       env:
         VERSION: ${{ needs.set-version-number.outputs.semVer }}
       
@@ -63,28 +63,3 @@ jobs:
       if: ${{ needs.set-version-number.outputs.is-release == 'true' }}
       run: dotnet nuget push /tmp/dapper-scaffold/nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_ORG_KEY}} --skip-duplicate
   
-  build-nuget-package:
-    needs: set-version-number
-    name: Build Nuget
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup .NET 8
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Pack Nuget package Dapper.Scaffold
-      run: dotnet pack ./Dapper.Scaffold/Dapper.Scaffold.csproj -c Release --include-symbols -o /tmp/dapper-scaffold/nupkg /p:Version=${{ env.VERSION }}
-      env:
-        VERSION: ${{ needs.set-version-number.outputs.semVer }}
-
-    - name: Push to Nuget.org
-      if: ${{ needs.set-version-number.outputs.is-release == 'true' }}
-      run: dotnet nuget push /tmp/dapper-scaffold/nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_ORG_KEY}} --skip-duplicate

@@ -13,7 +13,7 @@ internal class ClassGenerator
 {
     private readonly ClassGenerationOptions _options;
     private readonly IDatabaseReader _databaseReader;
-    private GeneratedFile _generatedFile;
+    private GeneratedFile? _generatedFile;
 
     public ClassGenerator(ClassGenerationOptions options, IDatabaseReader databaseReader)
     {
@@ -60,7 +60,10 @@ internal class ClassGenerator
         {
             await WriteFileAsync(connection, path, tableName, force, ns);
 
-            generatedFiles.Add(_generatedFile);
+            if (_generatedFile is not null)
+            {
+                generatedFiles.Add(_generatedFile);
+            }
         }
         else
         {
@@ -70,7 +73,10 @@ internal class ClassGenerator
             {
                 await WriteFileAsync(connection, path, table, force, ns);
 
-                generatedFiles.Add(_generatedFile);
+                if (_generatedFile is not null)
+                {
+                    generatedFiles.Add(_generatedFile);
+                }
             }
         }
 
@@ -164,7 +170,7 @@ internal class ClassGenerator
 
         await using var writer = new StreamWriter(filename, false);
 
-        await writer.WriteAsync(_generatedFile.ToString());
+        await writer.WriteAsync(_generatedFile?.ToString());
 
         Console.WriteLine($"File \"{filename}\" written.");
     }
@@ -238,7 +244,7 @@ internal class ClassGenerator
     private string GetCSharpType(TableColumn column)
     {
         var type = _databaseReader.GetCSharpType(column.ColumnType);
-        _generatedFile.AddNamespaceForType(type);
+        _generatedFile?.AddNamespaceForType(type);
 
         if (column.IsNullable)
         {

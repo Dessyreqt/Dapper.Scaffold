@@ -6,10 +6,10 @@ namespace Scaffer.Domain;
 public class GeneratedClass : GeneratedObject
 {
     public List<GeneratedProperty> Properties { get; } = new();
-    public string Name { get; set; }
-    public string TableName { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string TableName { get; set; } = string.Empty;
     public Access Access { get; set; }
-    public string IdentityColumn { get; set; }
+    public string? IdentityColumn { get; set; }
 
     public void AddProperty(GeneratedProperty generatedProperty)
     {

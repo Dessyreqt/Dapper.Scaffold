@@ -4,8 +4,8 @@ namespace Scaffer.Domain;
 
 public class GeneratedProperty : GeneratedObject
 {
-    public string Name { get; set; }
-    public string Type { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
     public Access Access { get; set; }
     public bool Readonly { get; set; }
     public bool HasDefault { get; set; }

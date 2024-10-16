@@ -5,17 +5,12 @@ namespace Scaffer.Domain;
 
 public abstract class GeneratedObject
 {
-    protected StringBuilder _output;
+    protected StringBuilder _output = new();
 
     public int BaseIndentation { get; set; }
 
     protected void AppendLine(string text = "")
     {
-        if (_output == null)
-        {
-            _output = new();
-        }
-
         if (text == "")
         {
             _output.AppendLine();

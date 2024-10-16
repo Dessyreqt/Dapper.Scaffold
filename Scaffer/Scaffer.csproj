@@ -6,6 +6,7 @@
     <AssemblyName>scaffer</AssemblyName>
     <Authors>David Carroll</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

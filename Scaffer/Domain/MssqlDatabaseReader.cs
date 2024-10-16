@@ -138,6 +138,19 @@ public class MssqlDatabaseReader : IDatabaseReader
             FROM INFORMATION_SCHEMA.TABLES
             WHERE TABLE_TYPE = 'BASE TABLE'
                 AND TABLE_SCHEMA = 'dbo'
+                AND TABLE_NAME NOT IN (
+                    SELECT [name]
+                    FROM [sys].[tables] tbl
+                    WHERE is_ms_shipped = 1
+                        OR (
+                            SELECT COUNT(*)
+                            FROM [sys].[extended_properties]
+                            WHERE [major_id] = tbl.object_id
+                                AND [minor_id] = 0
+                                AND [class] = 1
+                                AND [name] = 'microsoft_database_tools_support'
+                        ) > 0
+                )
             ORDER BY TABLE_NAME
             """;
 

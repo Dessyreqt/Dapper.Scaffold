@@ -10,13 +10,13 @@ internal class ClassGenerationOptions
     [Option('t', "tableName", HelpText = "The table from which to create the class.")]
     public string TableName { get; set; }
 
-    [Option('c', "connectionString", HelpText = "The connection string to a SQL Server database. Required if no default set in appsettings.json.")]
+    [Option('c', "connectionString", HelpText = "The connection string to a SQL Server database. Required.", Required = true)]
     public string ConnectionString { get; set; }
 
     [Option('p', "path", HelpText = "The path to which to save the class.")]
     public string Path { get; set; }
 
-    [Option('n', "namespace", HelpText = "The namespace in which the class will be created.")]
+    [Option('n', "namespace", HelpText = "The namespace in which the class will be created. Defaults to a name based on the database.")]
     public string Namespace { get; set; }
 
     [Option('f', "force", HelpText = "Force the file to be created, overwriting an existing file if necessary.")]

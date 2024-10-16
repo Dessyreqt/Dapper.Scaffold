@@ -34,7 +34,7 @@ internal class ClassGenerator
 
         var tableName = _options.TableName;
         var path = _options.Path ?? Directory.GetCurrentDirectory();
-        var ns = _options.Namespace ?? "Project";
+        var ns = _options.Namespace ?? GetClassName(connection.Database);
         var force = _options.Force;
         var generatedFiles = new List<GeneratedFile>();
 
@@ -86,11 +86,9 @@ internal class ClassGenerator
         var filename = Path.Combine(path, $"{className}ConnectionExtensions.g.cs");
         var firstClass = true;
 
-        Console.WriteLine($"Writing file \"{filename}\"...");
-
         if (!force && File.Exists(filename))
         {
-            throw new($"File \"{filename}\" already exists! Use -f to overwrite.");
+            throw new ApplicationException($"File \"{filename}\" already exists! Use -f to overwrite.");
         }
 
         var extensionsText = new StringBuilder();
@@ -156,8 +154,6 @@ internal class ClassGenerator
     {
         var className = GetClassName(tableName);
         var filename = Path.Combine(path, $"{className}.g.cs");
-
-        Console.WriteLine($"Writing file \"{filename}\"...");
 
         if (!force && File.Exists(filename))
         {

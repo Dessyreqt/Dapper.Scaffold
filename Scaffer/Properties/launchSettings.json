@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SqlServer": {
+      "commandName": "Project",
+      "commandLineArgs": "-c \"Server=.;Database=Scaffer.Test;Trusted_Connection=True;\" -p \"./mssql\" -n \"Scaffer.Test.Mssql\" -f -e -d"
+    },
+    "Postgres": {
+      "commandName": "Project",
+      "commandLineArgs": "-g postgres -c \"Host=localhost;Port=5432;Database=scaffer-test;Username=scaffer-user;Password=scaffer-password;\" -p \"./postgres\" -n \"Scaffer.Test.Postgres\" -f -e -d"
+    }
+  }
+}

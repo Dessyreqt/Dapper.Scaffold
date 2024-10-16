@@ -1,4 +1,4 @@
-# Dapper.Scaffold
+# Scaffer
 
 A simple Dapper scaffolding tool. Extracts models from your database and creates simple CRUD operations as extension methods.
 
@@ -6,11 +6,11 @@ A simple Dapper scaffolding tool. Extracts models from your database and creates
 
 The only required argument is the connection string to the database:
 
-`dapper-scaffold -c "Server=localhost;Database=Project;Trusted_Connection=True;"`
+`scaffer -c "Server=localhost;Database=Project;Trusted_Connection=True;"`
 
 This will generate models in the current folder for the Project database on the local SQL Server instance.
 
-For more information, see the [documentation on GitHub](https://github.com/Dessyreqt/Dapper.Scaffold).
+For more information, see the [documentation on GitHub](https://github.com/Dessyreqt/Scaffer).
 
 ### Supported databases
 

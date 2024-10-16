@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace Dapper.Scaffold.Domain;
+namespace Scaffer.Domain;
 
 internal class ClassGenerationOptions
 {

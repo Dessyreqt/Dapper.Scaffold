@@ -1,4 +1,4 @@
-﻿namespace Dapper.Scaffold.Domain;
+﻿namespace Scaffer.Domain;
 
 public class TableColumn
 {

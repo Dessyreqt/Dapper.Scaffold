@@ -48,7 +48,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet pack ./Dapper.Scaffold/Dapper.Scaffold.csproj -p:SelfContained=false -p:PackAsTool=true -p:PackageOutputPath=/tmp/dapper-scaffold/nupkg -p:Version=${{ env.VERSION }}
+      run: dotnet pack ./Scaffer/Scaffer.csproj -p:SelfContained=false -p:PackAsTool=true -p:PackageOutputPath=/tmp/scaffer/nupkg -p:Version=${{ env.VERSION }}
       env:
         VERSION: ${{ needs.set-version-number.outputs.semVer }}
       
@@ -56,10 +56,10 @@ jobs:
       uses: actions/upload-artifact@v4
       if: ${{ needs.set-version-number.outputs.is-release == 'true' }}
       with:
-        name: dapper-scaffold-dotnet-tool-${{ needs.set-version-number.outputs.semVer }}
-        path: /tmp/dapper-scaffold/nupkg/*   
+        name: scaffer-dotnet-tool-${{ needs.set-version-number.outputs.semVer }}
+        path: /tmp/scaffer/nupkg/*   
 
     - name: Push to Nuget.org
       if: ${{ needs.set-version-number.outputs.is-release == 'true' }}
-      run: dotnet nuget push /tmp/dapper-scaffold/nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_ORG_KEY}} --skip-duplicate
+      run: dotnet nuget push /tmp/scaffer/nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_ORG_KEY}} --skip-duplicate
   

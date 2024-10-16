@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Dapper.Scaffold.Domain;
+namespace Scaffer.Domain;
 
 public class GeneratedFile : GeneratedObject
 {

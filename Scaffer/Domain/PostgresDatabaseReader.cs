@@ -2,9 +2,10 @@
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Npgsql;
 
-namespace Dapper.Scaffold.Domain;
+namespace Scaffer.Domain;
 
 public class PostgresDatabaseReader : IDatabaseReader
 {

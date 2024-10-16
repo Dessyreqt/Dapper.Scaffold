@@ -1,4 +1,4 @@
-﻿namespace Dapper.Scaffold.Domain.Enums
+﻿namespace Scaffer.Domain.Enums
 {
     public enum Access
     {

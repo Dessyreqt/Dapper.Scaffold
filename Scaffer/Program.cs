@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CommandLine;
-using Dapper.Scaffold.Domain;
+using Scaffer.Domain;
 
-namespace Dapper.Scaffold;
+namespace Scaffer;
 
 public class Program
 {

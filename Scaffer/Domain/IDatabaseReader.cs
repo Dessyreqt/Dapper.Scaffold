@@ -2,7 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 
-namespace Dapper.Scaffold.Domain;
+namespace Scaffer.Domain;
 
 public interface IDatabaseReader
 {

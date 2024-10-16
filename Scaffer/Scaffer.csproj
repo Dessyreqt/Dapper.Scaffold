@@ -3,9 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyName>dapper-scaffold</AssemblyName>
+    <AssemblyName>scaffer</AssemblyName>
   </PropertyGroup>
-
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
@@ -17,7 +16,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugType>None</DebugType>
     <RuntimeIdentifiers>win-x64;win-x86;win-arm64;linux-musl-x64;linux-musl-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
-    <ToolCommandName>dapper-scaffold</ToolCommandName>
+    <ToolCommandName>scaffer</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-# Dapper.Scaffold
+# Scaffer
 
 A simple Dapper scaffolding tool. Extracts models from your database and creates simple CRUD operations as extension methods.
 
@@ -10,7 +10,7 @@ This code is licensed under the MIT License. See the LICENSE file for more infor
 
 The tool is a command line tool. Example usage:
 
-`dapper-scaffold.exe -g mssql -c "Server=localhost;Database=Project;Trusted_Connection=True;" -p "./Models" -n "Project.Models" -f -e -d`
+`scaffer.exe -g mssql -c "Server=localhost;Database=Project;Trusted_Connection=True;" -p "./Models" -n "Project.Models" -f -e -d`
 
 This will generate models and basic Create/Read/Update/Delete operations for the Project database on the local SQL Server instance and place them in the `./Models` folder with the namespace `Project.Models`.
 
@@ -110,4 +110,4 @@ At the moment, only development on Windows is supported. This is due to the use 
 Your development environment should have the following installed:
 - .NET 8.0 SDK [Download](https://dotnet.microsoft.com/download/dotnet/8.0)
 
-Run the publish.bat script to publish the project. The output will be in the `./Dapper.Scaffold/bin/Release/net8.0/win-x64/publish/` folder.
+Run the publish.bat script to publish the project. The output will be in the `./Scaffer/bin/Release/net8.0/win-x64/publish/` folder.

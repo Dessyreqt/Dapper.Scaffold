@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dapper.Scaffold.Domain.Enums;
+using Scaffer.Domain.Enums;
 
-namespace Dapper.Scaffold.Domain;
+namespace Scaffer.Domain;
 
 internal class ClassGenerator
 {

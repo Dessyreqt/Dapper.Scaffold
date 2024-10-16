@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using Dapper.Scaffold.Domain.Enums;
+using Scaffer.Domain.Enums;
 
-namespace Dapper.Scaffold.Domain;
+namespace Scaffer.Domain;
 
 public abstract class GeneratedObject
 {

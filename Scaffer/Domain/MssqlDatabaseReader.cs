@@ -3,8 +3,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 
-namespace Dapper.Scaffold.Domain;
+namespace Scaffer.Domain;
 
 public class MssqlDatabaseReader : IDatabaseReader
 {
